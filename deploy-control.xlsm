@@ -1,0 +1,35 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "Sheet1"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+
+Private Sub CommandButton1_Click()
+    ' 部署到生产环境
+    Dim objShell As Object
+    Set objShell = CreateObject("WScript.Shell")
+    
+    ' 切换到项目目录
+    ChDir ThisWorkbook.Path
+    
+    ' 执行 Git 命令
+    objShell.Run "git add .", 0
+    objShell.Run "git commit -m ""Update website content""", 0
+    objShell.Run "git push origin main", 0
+    
+    MsgBox "部署命令已发送！请在 GitHub Actions 中查看部署进度。", vbInformation
+End Sub
+
+Private Sub Workbook_Open()
+    ' 创建部署按钮
+    With Sheet1
+        With .Buttons.Add(100, 100, 150, 50)
+            .OnAction = "Sheet1.CommandButton1_Click"
+            .Caption = "一键部署"
+        End With
+    End With
+End Sub 
